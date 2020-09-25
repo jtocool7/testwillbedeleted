@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> Pokemon Battle Simulator</title>
+  <style>
+   
+   
+   *{
+     user-select:none;
+     font-family:calibri;
+   }
+   
+  #canvas{
+   position:absolute;
+   right:110px;
+   top:600px;
+    border:1px solid #000;
+    border-radius:50px;
+    z-index : 1;
+  }
+  
+  #canvas2{
+    right:50px;
+   position:absolute;
+   top:100px;
+    border:1px solid #000;
+    border-radius:50px;
+    z-index : 1;
+  }
+  
+  #main{
+    position:absolute;
+    right:25px;
+   border:1px solid #000;
+   
+  
+  }
+  
+  .hide{
+    display:none;
+  }
+  
+  #squ{
+    position:absolute;
+    right:100px;
+    top:600px;
+    border: 1px solid #000;
+    border-radius:50px;
+    width:100px;
+     height:100px;
+    text-align:center;
+    background:white;
+  }
+  
+  #one{
+    position:absolute;
+    top:25px;
+    right:20px;
+   
+   
+  }
+  
+  #no{
+     position:absolute;
+    right:150px;
+    top:420px;
+   
+    border-radius:50px;
+    width:100px;
+     height:100px;
+    text-align:center;
+    
+    
+  }
+  
+  #move1{
+   position:absolute;
+    right:240px;
+    top:400px;
+    border: 1px solid #000;
+    border-radius:50px;
+    width:100px;
+     height:50px;
+    text-align:center;
+    background:white;
+  }
+  
+  #1{
+     position:absolute;
+    top:25px;
+    right:20px;
+  }
+  
+  #move2{
+   position:absolute;
+    right:70px;
+    top:400px;
+    border: 1px solid #000;
+    border-radius:50px;
+    width:100px;
+     height:50px;
+    text-align:center;
+    background:white;
+  }
+  
+  #2{
+     position:absolute;
+    top:25px;
+    right:20px;
+  }
+  
+  #move3{
+   position:absolute;
+    right:240px;
+    top:500px;
+    border: 1px solid #000;
+    border-radius:50px;
+    width:100px;
+     height:50px;
+    text-align:center;
+    background:white;
+  }
+  
+  #3{
+     position:absolute;
+    top:25px;
+    right:20px;
+  }
+  
+  #move4{
+   position:absolute;
+    right:70px;
+    top:500px;
+    border: 1px solid #000;
+    border-radius:50px;
+    width:100px;
+     height:50px;
+    text-align:center;
+    background:white;
+  }
+  
+  #4{
+     position:absolute;
+    top:25px;
+    right:20px;
+  }
+ 
+  </style>
+</head>
+<body>
+  <canvas class="hide" id="canvas" width="600" height="25">
+  
+    
+  </canvas>
+  
+  <canvas class="hide" id="canvas2" width="600" height="25">
+  
+  
+    
+    </canvas>
+    
+    <canvas id="main" width="700" height="700"></canvas>
+    
+    <div>
+      <img  class="hide" onclick="moves()" id="no" src="https://serebii.net/itemdex/sprites/pgl/pokeball.png" width="50"  alt="pokeball">
+    </div>
+  
+    
+    <div class="hide" id="move1" onclick="atk1()">
+    <p id="1">
+    
+    </p>
+    </div>
+    
+    <div class="hide" id="move2">
+    <p id="2">
+    
+    </p>
+    </div>
+    
+       <div class="hide" id="move3">
+    <p id="3">
+    
+    </p>
+    </div>
+    <div class="hide" id="move4">
+    <p id="4">
+    
+    </p>
+    </div>
+    
+    
+    <div id="squ" onclick="squirtle()">
+      <img id="one" src="https://www.pngkey.com/png/full/439-4399737_squirtle-pokemon-squirtle-sprite.png" alt="squirtle sprite" width="50">
+    </div>
+    <script>
+    
+    
+    function storageAvailable(type) {
+    var storage;
+    try {
+        storage = window[type];
+        var x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
+    }
+    
+    if (storageAvailable('localStorage')) {
+  	 const cvs = document.getElementById('main');
+    const cxt = cvs.getContext("2d");
+    const sad = document.getElementById('canvas');
+    const no = sad.getContext("2d");
+    const no2 = canvas2.getContext("2d");
+    
+const state = {
+getReady : 0,
+game : 1,
+over : 2,
+current : 0
+
+}
+
+let phealth = 100;
+let monHealth = 100;
+var bg = new Image();
+bg.src = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2fb2821a-1406-4a1d-9b04-6668f278e944/d843okx-eb13e8e4-0fa4-4fa9-968a-e0f36ff168de.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMmZiMjgyMWEtMTQwNi00YTFkLTliMDQtNjY2OGYyNzhlOTQ0XC9kODQzb2t4LWViMTNlOGU0LTBmYTQtNGZhOS05NjhhLWUwZjM2ZmYxNjhkZS5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.bhj0Qs9G9h8on8c0mY3t31JfbxhhtPT09e-I3RmEQ1I";
+
+function background(){
+this.x = 0, this.y = 0, this.w = bg.width, this.h = bg.h;
+this.render = function(){
+cxt.drawImage(bg,this.x, this.y, cvs.width + 100, cvs.height + 100);
+}
+} 
+function drawHealth(){
+if(phealth == 100){
+no.fillStyle = "#90ee90";
+ no.fillRect(0,0,sad.width, sad.height);
+}
+if(monHealth == 100){
+no2.fillStyle = "#90ee90";
+ no2.fillRect(0,0,sad.width, sad.height);
+}else if(monHealth <= 100){
+no2.fillStyle = '#ADD8E6';
+ no2.fillRect(0,0,sad.width, sad.height);
+}
+}
+
+
+const move1 = document.getElementById('1');
+const m1 = document.getElementById('move1');
+const move2 = document.getElementById('2');
+const m2 = document.getElementById('move2');
+const move3 = document.getElementById('3');
+const m3 = document.getElementById('move3');
+const move4 = document.getElementById('4');
+const m4 = document.getElementById('move4');
+
+function squirtle(){
+if(state.current == state.getReady){
+squ.classList.add('hide');
+state.current = state.game;
+canvas.classList.remove('hide');
+canvas2.classList.remove('hide');
+}
+if(state.current == state.game){
+const no = document.getElementById('no');
+no.classList.remove('hide');
+move1.innerHTML = "Water Gun";
+move1.classList.add('blue');
+m1.style.background = "#ADD8E6";
+move2.innerHTML = "Bite";
+m2.style.background = '#705848';
+m3.style.background = "#ADD8E6";
+move3.innerHTML = "Water Pulse";
+move4.innerHTML = "Rapid Spin";
+m4.style.background = "#A8A878";
+}
+
+}
+
+function moves(){
+m1.classList.remove('hide');
+m2.classList.remove('hide');
+m3.classList.remove('hide');
+m4.classList.remove('hide');
+}
+
+
+   var background = new background(); 
+   
+   
+   function atk1(){
+   monHealth = monHealth - 40;
+   }
+   
+   // local storage
+   
+   
+   
+    function loop(){
+     setInterval(loop);
+     background.render();
+     drawHealth();
+    
+  
+     
+}
+loop();
+}
+else {
+   const cvs = document.getElementById('main');
+    const cxt = cvs.getContext("2d");
+    const sad = document.getElementById('canvas');
+    const no = sad.getContext("2d");
+    const no2 = canvas2.getContext("2d");
+    
+const state = {
+getReady : 0,
+game : 1,
+over : 2,
+current : 0
+
+}
+
+let phealth = 100;
+let monHealth = 100;
+var bg = new Image();
+bg.src = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2fb2821a-1406-4a1d-9b04-6668f278e944/d843okx-eb13e8e4-0fa4-4fa9-968a-e0f36ff168de.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMmZiMjgyMWEtMTQwNi00YTFkLTliMDQtNjY2OGYyNzhlOTQ0XC9kODQzb2t4LWViMTNlOGU0LTBmYTQtNGZhOS05NjhhLWUwZjM2ZmYxNjhkZS5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.bhj0Qs9G9h8on8c0mY3t31JfbxhhtPT09e-I3RmEQ1I";
+
+function background(){
+this.x = 0, this.y = 0, this.w = bg.width, this.h = bg.h;
+this.render = function(){
+cxt.drawImage(bg,this.x, this.y, cvs.width + 100, cvs.height + 100);
+}
+} 
+function drawHealth(){
+if(phealth == 100){
+no.fillStyle = "#90ee90";
+ no.fillRect(0,0,sad.width, sad.height);
+}
+if(monHealth == 100){
+no2.fillStyle = "#90ee90";
+ no2.fillRect(0,0,sad.width, sad.height);
+}else if(monHealth <= 100){
+no2.fillStyle = '#ADD8E6';
+ no2.fillRect(0,0,sad.width, sad.height);
+}
+}
+
+
+const move1 = document.getElementById('1');
+const m1 = document.getElementById('move1');
+const move2 = document.getElementById('2');
+const m2 = document.getElementById('move2');
+const move3 = document.getElementById('3');
+const m3 = document.getElementById('move3');
+const move4 = document.getElementById('4');
+const m4 = document.getElementById('move4');
+
+function squirtle(){
+if(state.current == state.getReady){
+squ.classList.add('hide');
+state.current = state.game;
+canvas.classList.remove('hide');
+canvas2.classList.remove('hide');
+}
+if(state.current == state.game){
+const no = document.getElementById('no');
+no.classList.remove('hide');
+move1.innerHTML = "Water Gun";
+move1.classList.add('blue');
+m1.style.background = "#ADD8E6";
+move2.innerHTML = "Bite";
+m2.style.background = '#705848';
+m3.style.background = "#ADD8E6";
+move3.innerHTML = "Water Pulse";
+move4.innerHTML = "Rapid Spin";
+m4.style.background = "#A8A878";
+}
+
+}
+
+function moves(){
+m1.classList.remove('hide');
+m2.classList.remove('hide');
+m3.classList.remove('hide');
+m4.classList.remove('hide');
+}
+
+
+   var background = new background(); 
+   
+   
+   function atk1(){
+   monHealth = monHealth - 40;
+   }
+   
+   // local storage
+   
+   
+   
+    function loop(){
+     setInterval(loop);
+     background.render();
+     drawHealth();
+    
+  
+     
+}
+loop();
+}
+}
+    
+    
+   
+    </script>
+</body>
+</html>
