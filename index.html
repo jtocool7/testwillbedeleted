@@ -167,7 +167,7 @@
     </div>
   
     
-    <div class="hide" id="move1" onclick="atk1()">
+    <div class="hide" id="move1" >
     <p id="1">
     
     </p>
@@ -197,7 +197,7 @@
     <script>
     
     
-    function storageAvailable(type) {
+    /*function storageAvailable(type) {
     var storage;
     try {
         storage = window[type];
@@ -222,113 +222,28 @@
     }
     
     if (storageAvailable('localStorage')) {
-  	 const cvs = document.getElementById('main');
-    const cxt = cvs.getContext("2d");
-    const sad = document.getElementById('canvas');
-    const no = sad.getContext("2d");
-    const no2 = canvas2.getContext("2d");
-    
-const state = {
-getReady : 0,
-game : 1,
-over : 2,
-current : 0
-
-}
-
-let phealth = 100;
-let monHealth = 100;
-var bg = new Image();
-bg.src = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2fb2821a-1406-4a1d-9b04-6668f278e944/d843okx-eb13e8e4-0fa4-4fa9-968a-e0f36ff168de.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMmZiMjgyMWEtMTQwNi00YTFkLTliMDQtNjY2OGYyNzhlOTQ0XC9kODQzb2t4LWViMTNlOGU0LTBmYTQtNGZhOS05NjhhLWUwZjM2ZmYxNjhkZS5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.bhj0Qs9G9h8on8c0mY3t31JfbxhhtPT09e-I3RmEQ1I";
-
-function background(){
-this.x = 0, this.y = 0, this.w = bg.width, this.h = bg.h;
-this.render = function(){
-cxt.drawImage(bg,this.x, this.y, cvs.width + 100, cvs.height + 100);
-}
-} 
-function drawHealth(){
-if(phealth == 100){
-no.fillStyle = "#90ee90";
- no.fillRect(0,0,sad.width, sad.height);
-}
-if(monHealth == 100){
-no2.fillStyle = "#90ee90";
- no2.fillRect(0,0,sad.width, sad.height);
-}else if(monHealth <= 100){
-no2.fillStyle = '#ADD8E6';
- no2.fillRect(0,0,sad.width, sad.height);
-}
-}
-
-
-const move1 = document.getElementById('1');
-const m1 = document.getElementById('move1');
-const move2 = document.getElementById('2');
-const m2 = document.getElementById('move2');
-const move3 = document.getElementById('3');
-const m3 = document.getElementById('move3');
-const move4 = document.getElementById('4');
-const m4 = document.getElementById('move4');
-
-function squirtle(){
-if(state.current == state.getReady){
-squ.classList.add('hide');
-state.current = state.game;
-canvas.classList.remove('hide');
-canvas2.classList.remove('hide');
-}
-if(state.current == state.game){
-const no = document.getElementById('no');
-no.classList.remove('hide');
-move1.innerHTML = "Water Gun";
-move1.classList.add('blue');
-m1.style.background = "#ADD8E6";
-move2.innerHTML = "Bite";
-m2.style.background = '#705848';
-m3.style.background = "#ADD8E6";
-move3.innerHTML = "Water Pulse";
-move4.innerHTML = "Rapid Spin";
-m4.style.background = "#A8A878";
-}
-
-}
-
-function moves(){
-m1.classList.remove('hide');
-m2.classList.remove('hide');
-m3.classList.remove('hide');
-m4.classList.remove('hide');
-}
-
-
-   var background = new background(); 
-   
-   
-   function atk1(){
-   monHealth = monHealth - 40;
-   }
-   
-   // local storage
-   
-   
-   
-    function loop(){
-     setInterval(loop);
-     background.render();
-     drawHealth();
-    
-  
-     
-}
-loop();
+  	
 }
 else {
-   const cvs = document.getElementById('main');
+  
+}
+}*/
+    
+    
+    const cvs = document.getElementById('main');
     const cxt = cvs.getContext("2d");
     const sad = document.getElementById('canvas');
     const no = sad.getContext("2d");
     const no2 = canvas2.getContext("2d");
+    
+    
+    const ai = {
+    pokemon : null,
+    pikachu : 0,
+    squirtle : 1, 
+    charizard : 2,
+    lucario : 3
+    }
     
 const state = {
 getReady : 0,
@@ -338,9 +253,17 @@ current : 0
 
 }
 
+let atk = true;
+const user = {
+urTurn : true,
+comTurn : false
+}
 let phealth = 100;
-let monHealth = 100;
+let monhealth = 100;
+let watertype = false;
+let firetype = false;
 var bg = new Image();
+let isSquirt = false;
 bg.src = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2fb2821a-1406-4a1d-9b04-6668f278e944/d843okx-eb13e8e4-0fa4-4fa9-968a-e0f36ff168de.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMmZiMjgyMWEtMTQwNi00YTFkLTliMDQtNjY2OGYyNzhlOTQ0XC9kODQzb2t4LWViMTNlOGU0LTBmYTQtNGZhOS05NjhhLWUwZjM2ZmYxNjhkZS5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.bhj0Qs9G9h8on8c0mY3t31JfbxhhtPT09e-I3RmEQ1I";
 
 function background(){
@@ -349,19 +272,98 @@ this.render = function(){
 cxt.drawImage(bg,this.x, this.y, cvs.width + 100, cvs.height + 100);
 }
 } 
-function drawHealth(){
+
+function hi(){
+
 if(phealth == 100){
 no.fillStyle = "#90ee90";
  no.fillRect(0,0,sad.width, sad.height);
+}else if(phealth >= 95){
+no.fillStyle = "#90ee90";
+no.fillRect(0,0,sad.width * 0.95, sad.height);
+}else if(phealth <= 94 && phealth >= 90){
+no.fillStyle = "#90ee90";
+no.fillRect(0,0,sad.width * 0.9, sad.height);
+}else if(phealth >= 95 && phealth >= 90){
+no.fillStyle = "#90ee90";
+no.fillRect(0,0,sad.width * 0.85, sad.height);
+}else if(phealth <= 84 && phealth >= 80){
+no.fillStyle = "#90ee90";
+no.fillRect(0,0,sad.width * 0.80, sad.height);
 }
-if(monHealth == 100){
+if(monhealth == 100){
 no2.fillStyle = "#90ee90";
  no2.fillRect(0,0,sad.width, sad.height);
-}else if(monHealth <= 100){
-no2.fillStyle = '#ADD8E6';
+}else if(monhealth >= 95 && monhealth < 100){
+no2.fillStyle = "#90ee90";
+no2.fillRect(0,0,sad.width * 0.95, sad.height);
+}else if(monhealth <= 94 && monhealth >= 90){
+no2.fillStyle = "#90ee90";
+no2.fillRect(0,0,sad.width * 0.9, sad.height);
+}else if(monhealth <= 90 && monhealth >= 85){
+no2.fillStyle = "#90ee90";
+no2.fillRect(0,0,sad.width * 0.85, sad.height);
+}else if(monhealth <= 84 && monhealth >= 80){
+no2.fillStyle = "#90ee90";
+no2.fillRect(0,0,sad.width * 0.80, sad.height);
+}
+
+
+
+}
+
+function drawHealth(){
+while(atk == true && user.urTurn == true){
+ move1.addEventListener('click' , function(){
+ 
+   if(isSquirt == true){
+    monhealth -= 10;
+   if(firetype == true){
+   monhealth = monhealth - 45;
+   }
+   }
+   console.log(monhealth);
+   if(phealth == 100){
+no.fillStyle = "#90ee90";
+ no.fillRect(0,0,sad.width, sad.height);
+}else if(phealth >= 95){
+no.fillStyle = "#90ee90";
+no.fillRect(0,0,sad.width * 0.95, sad.height);
+}else if(phealth <= 94 && phealth >= 90){
+no.fillStyle = "#90ee90";
+no.fillRect(0,0,sad.width * 0.9, sad.height);
+}else if(phealth >= 95 && phealth >= 90){
+no.fillStyle = "#90ee90";
+no.fillRect(0,0,sad.width * 0.85, sad.height);
+}else if(phealth <= 84 && phealth >= 80){
+no.fillStyle = "#90ee90";
+no.fillRect(0,0,sad.width * 0.80, sad.height);
+}
+if(monhealth == 100){
+no2.fillStyle = "#90ee90";
  no2.fillRect(0,0,sad.width, sad.height);
+}else if(monhealth >= 95 && monhealth < 100){
+no2.fillStyle = "#90ee90";
+no2.fillRect(0,0,sad.width * 0.95, sad.height);
+}else if(monhealth <= 94 && monhealth >= 90){
+no2.fillStyle = "#90ee90";
+no2.fillRect(0,0,sad.width * 0.9, sad.height);
+}else if(monhealth <= 90 && monhealth >= 85){
+no2.fillStyle = "#90ee90";
+no2.fillRect(0,0,sad.width * 0.85, sad.height);
+}else if(monhealth <= 84 && monhealth >= 80){
+no2.fillStyle = "#90ee90";
+no2.fillRect(0,0,sad.width * 0.80, sad.height);
 }
+
+   }
+   
+   )
 }
+
+}
+
+
 
 
 const move1 = document.getElementById('1');
@@ -374,6 +376,7 @@ const move4 = document.getElementById('4');
 const m4 = document.getElementById('move4');
 
 function squirtle(){
+ isSquirt = true;
 if(state.current == state.getReady){
 squ.classList.add('hide');
 state.current = state.game;
@@ -396,6 +399,7 @@ m4.style.background = "#A8A878";
 
 }
 
+
 function moves(){
 m1.classList.remove('hide');
 m2.classList.remove('hide');
@@ -407,28 +411,28 @@ m4.classList.remove('hide');
    var background = new background(); 
    
    
-   function atk1(){
-   monHealth = monHealth - 40;
-   }
+  
    
-   // local storage
+   
    
    
    
     function loop(){
-     setInterval(loop);
-     background.render();
-     drawHealth();
     
+    
+
+    
+     
+     background.render();
+    
+      requestAnimationFrame(loop);
+    drawHealth();
   
      
 }
 loop();
-}
-}
-    
-    
-   
+
+ 
     </script>
 </body>
 </html>
